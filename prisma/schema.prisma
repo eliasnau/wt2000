@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// schema.prisma
+
+// Define the Member model
+model Member {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  firstname     String
+  lastname      String
+  name          String
+  email         String
+  phone         String
+  sex           EnumSex // Enum type for sex: "male", "female", "other"
+  birth         DateTime
+  zip           Int
+  city          String
+  street        String
+  contractDate  DateTime
+  contractEnd   DateTime
+  group         Group?    @relation(fields: [groupId], references: [id])
+  contribution  Int
+  noticePeriod  Int
+  bank          String
+  iban          String
+  bic           String
+  accountHolder String
+
+  // Optional fields for the "Eb" section
+  lastnameEb  String?
+  firstnameEb String?
+  streetEb    String?
+  zipEb       Int?
+  cityEb      String?
+  phoneEb     String?
+
+  // Foreign key
+  groupId String? @db.ObjectId()
+}
+
+enum EnumSex {
+  male
+  female
+  other
+}
+
+model Group {
+  id     String   @id @default(auto()) @map("_id") @db.ObjectId
+  name   String
+  price  Float
+  // Add any other fields relevant to your group model
+  Member Member[]
+}
